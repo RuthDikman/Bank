@@ -9,19 +9,24 @@ namespace bank.Controllers
     [ApiController]
     public class CustomerTurns : ControllerBase
     {
-        public static List<Customer> customers = new List<Customer>();
+        private readonly DataContext customers;
+        public CustomerTurns(DataContext context)
+        {
+            customers = context;
+        }
+
         // GET: api/<Customers>
         [HttpGet]
         public List<Customer> Get()
         {
-            return customers;
+            return customers.Customers;
         }
 
         // GET api/<Customers>/5
         [HttpGet("{tz}")]
         public Customer Get(string tz)
         {
-            Customer c = customers.Find(x => x.Tz == tz);
+            Customer c = customers.Customers.Find(x => x.Tz == tz);
             return c;
         }
 
@@ -29,14 +34,14 @@ namespace bank.Controllers
         [HttpPost]
         public void Post([FromBody] Customer value)
         {
-            customers.Add(value);
+            customers.Customers.Add(value);
         }
 
         // PUT api/<Customers>/5
         [HttpPut("{id}")]
         public ActionResult Put(int id, [FromBody] Customer value)
         {
-            Customer c = customers.Find(x => x.Id == id);
+            Customer c = customers.Customers.Find(x => x.Id == id);
             if (c == null)
             {
                 return NotFound();
@@ -50,12 +55,12 @@ namespace bank.Controllers
         [HttpDelete("{id}")]
         public ActionResult Delete(int id)
         {
-            Customer c = customers.Find(x => x.Id == id);
+            Customer c = customers.Customers.Find(x => x.Id == id);
             if (c == null)
             {
                 return NotFound(id);
             }
-            customers.Remove(c);
+            customers.Customers.Remove(c);
             return Ok(c);
         }
     }
